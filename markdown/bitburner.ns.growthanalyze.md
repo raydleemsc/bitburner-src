@@ -4,12 +4,12 @@
 
 ## NS.growthAnalyze() method
 
-Calculate the number of grow threads needed for a given multiplicative growth factor.
+Calculate the number of grow threads needed to grow a server by a certain multiplier.
 
 **Signature:**
 
 ```typescript
-growthAnalyze(host: string, multiplier: number, cores?: number): number;
+growthAnalyze(host: string, growthAmount: number, cores?: number): number;
 ```
 
 ## Parameters
@@ -17,33 +17,42 @@ growthAnalyze(host: string, multiplier: number, cores?: number): number;
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  host | string | Hostname of the target server. |
-|  multiplier | number | Multiplier that will be applied to a server's money after applying additive growth. Decimal form. |
-|  cores | number | _(Optional)_ Number of cores on the host running the grow function. Optional, defaults to 1. |
+|  growthAmount | number | Multiplicative factor by which the server is grown. Decimal form. |
+|  cores | number | _(Optional)_ |
 
 **Returns:**
 
 number
 
-Decimal number of grow threads needed for the specified multiplicative growth factor (does not include additive growth).
+The amount of grow calls needed to grow the specified server by the specified amount.
 
 ## Remarks
 
 RAM cost: 1 GB
 
-This function returns the total decimal number of [grow](./bitburner.ns.grow.md) threads needed in order to multiply the money available on the specified server by a given multiplier, if all threads are executed at the server's current security level, regardless of how many threads are assigned to each call.
+This function returns the number of “growths” needed in order to increase the amount of money available on the specified server by the specified amount. The specified amount is multiplicative and is in decimal form, not percentage.
 
-Note that there is also an additive factor that is applied before the multiplier. Each [grow](./bitburner.ns.grow.md) call will add $1 to the host's money for each thread before applying the multiplier for its thread count. This means that at extremely low starting money, fewer threads would be needed to apply the same effective multiplier than what is calculated by growthAnalyze.
+Due to limitations of mathematics, this function won't be the true value, but an approximation.
 
-Like other basic hacking analysis functions, this calculation uses the current status of the player and server. To calculate using hypothetical server or player status, obtain access to the Formulas API and use [formulas.hacking.growThreads](./bitburner.hackingformulas.growthreads.md)<!-- -->.
+Warning: The value returned by this function isn’t necessarily a whole number.
 
-## Example
+## Example 1
 
 
-```js
-// calculate number of grow threads to apply 2x growth multiplier on n00dles (does not include the additive growth).
-const growThreads = ns.growthAnalyze("n00dles", 2);
+```ts
+// NS1:
+//For example, if you want to determine how many grow calls you need to double the amount of money on foodnstuff, you would use:
+var growTimes = growthAnalyze("foodnstuff", 2);
+//If this returns 100, then this means you need to call grow 100 times in order to double the money (or once with 100 threads).
+```
 
-// When using the thread count to launch a script, it needs to be converted to an integer.
-ns.run("noodleGrow.js", Math.ceil(growThreads));
+## Example 2
+
+
+```ts
+// NS2:
+//For example, if you want to determine how many grow calls you need to double the amount of money on foodnstuff, you would use:
+const growTimes = ns.growthAnalyze("foodnstuff", 2);
+//If this returns 100, then this means you need to call grow 100 times in order to double the money (or once with 100 threads).
 ```
 

@@ -27,5 +27,4 @@ export interface Office
 |  [maxHap](./bitburner.office.maxhap.md) |  | number | Maximum happiness of the employees |
 |  [maxMor](./bitburner.office.maxmor.md) |  | number | Maximum morale of the employees |
 |  [size](./bitburner.office.size.md) |  | number | Maximum number of employee |
-|  [totalExperience](./bitburner.office.totalexperience.md) |  | number | Total experience of all employees |
 

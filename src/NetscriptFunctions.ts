@@ -144,7 +144,7 @@ export const ns: InternalAPI<NSFull> = {
       // TODO 2.2: better type safety rework for functions using assertObjectType, then remove function.
       const optsValidator: BasicHGWOptions = {};
       assertObjectType(ctx, "opts", opts, optsValidator);
-      return helpers.hack(ctx, hostname, false, opts);
+      return helpers.hack(ctx, hostname, false, { threads: opts.threads, stock: opts.stock });
     },
   hackAnalyzeThreads: (ctx) => (_hostname, _hackAmount) => {
     const hostname = helpers.string(ctx, "hostname", _hostname);
@@ -241,11 +241,11 @@ export const ns: InternalAPI<NSFull> = {
       const hostname = helpers.string(ctx, "hostname", _hostname);
       const optsValidator: BasicHGWOptions = {};
       assertObjectType(ctx, "opts", opts, optsValidator);
-      const threads = helpers.resolveNetscriptRequestedThreads(ctx, opts.threads);
-      const additionalMsec = helpers.number(ctx, "opts.additionalMsec", opts.additionalMsec ?? 0);
-      if (additionalMsec < 0) {
-        throw helpers.makeRuntimeErrorMsg(ctx, `additionalMsec must be non-negative, got ${additionalMsec}`);
-      }
+      const requestedThreads =
+        opts.threads === undefined
+          ? ctx.workerScript.scriptRef.threads
+          : helpers.number(ctx, "opts.threads", opts.threads);
+      const threads = helpers.resolveNetscriptRequestedThreads(ctx, requestedThreads);
 
       const server = helpers.getServer(ctx, hostname);
       if (!(server instanceof Server)) {
@@ -264,7 +264,7 @@ export const ns: InternalAPI<NSFull> = {
         throw helpers.makeRuntimeErrorMsg(ctx, canHack.msg || "");
       }
 
-      const growTime = calculateGrowTime(server, Player) + additionalMsec / 1000.0;
+      const growTime = calculateGrowTime(server, Player);
       helpers.log(
         ctx,
         () =>
@@ -348,11 +348,11 @@ export const ns: InternalAPI<NSFull> = {
       const hostname = helpers.string(ctx, "hostname", _hostname);
       const optsValidator: BasicHGWOptions = {};
       assertObjectType(ctx, "opts", opts, optsValidator);
-      const threads = helpers.resolveNetscriptRequestedThreads(ctx, opts.threads);
-      const additionalMsec = helpers.number(ctx, "opts.additionalMsec", opts.additionalMsec ?? 0);
-      if (additionalMsec < 0) {
-        throw helpers.makeRuntimeErrorMsg(ctx, `additionalMsec must be non-negative, got ${additionalMsec}`);
-      }
+      const requestedThreads =
+        opts.threads === undefined
+          ? ctx.workerScript.scriptRef.threads
+          : helpers.number(ctx, "opts.threads", opts.threads);
+      const threads = helpers.resolveNetscriptRequestedThreads(ctx, requestedThreads);
 
       const server = helpers.getServer(ctx, hostname);
       if (!(server instanceof Server)) {
@@ -366,7 +366,7 @@ export const ns: InternalAPI<NSFull> = {
         throw helpers.makeRuntimeErrorMsg(ctx, canHack.msg || "");
       }
 
-      const weakenTime = calculateWeakenTime(server, Player) + additionalMsec / 1000.0;
+      const weakenTime = calculateWeakenTime(server, Player);
       helpers.log(
         ctx,
         () =>
