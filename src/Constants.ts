@@ -230,6 +230,8 @@ export const CONSTANTS: {
   LatestUpdate: `
 v2.2.2 - 21 Feb 2022
 
+Hotfix: Fixed API server in electron version. (Thanks to u/AnyGiraffe4367 for finding the fix)
+
 PLANNED 2.3 BREAKING CHANGES:
 * 2.3 will include a large planned rework to corporation. This may cause api breaks for any corporation scripts, and there will be large changes in how the corporation mechanic functions.
 
