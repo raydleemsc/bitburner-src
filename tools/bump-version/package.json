@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "command-line-args": "^5.2.0",
+    "command-line-args": "^5.2.1",
     "node-pandoc": "^0.3.0"
   }
 }
